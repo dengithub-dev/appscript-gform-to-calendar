@@ -17,3 +17,14 @@ const doGet = () => {
    const obj = values.map(r => r.reduce((o, c, j) => Object.assign(o, {[header[j]]: c}), {})); //functional paradigm style
    return ContentService.createTextOutput(JSON.stringify(obj)).setMimeType(ContentService.MimeType.JSON); 
 }
+
+//If you want to run a function in spreadsheet, use the code below
+const setCalendarInSheetFunction = (e) => {
+    //Onedit on column 5 with value of "Set in Calendar"
+    if (e.range.columnStart != 5 || e.value != "Set in Calendar") return; 
+    var data = e.source.getActiveSheet().getRange(e.range.rowStart,1,1,4).getValues();
+    const event = data[0][1]; //column B
+    const startDateTime = data[0][2]; //column C
+    const endDateTime = data[0][3]; //column D
+    CalendarApp.getDefaultCalendar().createEvent(event, startDateTime,endDateTime);
+}
